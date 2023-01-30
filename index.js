@@ -6,7 +6,7 @@ const path = require('node:path');
 // Require the necessary discord.js classes
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
-const client = new Client({
+global.client = new Client({
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
@@ -15,7 +15,7 @@ const client = new Client({
 });
 
 // Load events
-client.events = new Collection();
+global.client.events = new Collection();
 
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
@@ -24,15 +24,15 @@ for (const file of eventFiles) {
 	const filePath = path.join(eventsPath, file);
 	const event = require(filePath);
 	if (event.once) {
-		client.once(event.name, (...args) => event.execute(...args));
+		global.client.once(event.name, (...args) => event.execute(...args));
 	}
 	else {
-		client.on(event.name, (...args) => event.execute(...args));
+		global.client.on(event.name, (...args) => event.execute(...args));
 	}
 }
 
 // Load commands
-client.commands = new Collection();
+global.client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -42,12 +42,12 @@ for (const file of commandFiles) {
 	const command = require(filePath);
 	// Set a new item in the Collection with the key as the command name and the value as the exported module
 	if ('data' in command && 'execute' in command) {
-		client.commands.set(command.data.name, command);
+		global.client.commands.set(command.data.name, command);
 	}
 	else {
 		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 	}
 }
 
-// Login to Discord with your client's token
-client.login(process.env.token);
+// Login to Discord with your global.client's token
+global.client.login(process.env.token);
