@@ -18,11 +18,9 @@ module.exports = {
 		if (interaction.isStringSelectMenu()) {
 			// value returns as a single-index list
 			const selectedId = interaction.values[0];
-			getCardFromId(interaction.client, selectedId)
-				.then((embed) => {
-					interaction.update({ content: '', embeds: [embed], components: [] });
-				})
-				.catch((err) => console.log(err));
+			let embed;
+			await getCardFromId(selectedId).then((card) => { embed = card; }).catch((err) => console.log(err));
+			await interaction.reply({ embeds: [embed] });
 		}
 	},
 };

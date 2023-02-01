@@ -13,21 +13,22 @@ module.exports = {
 			option.setName('term')
 				.setDescription('Search term to use.')
 				.setRequired(true),
-		)
-		.addBooleanOption(option =>
-			option.setName('ephemeral')
-				.setDescription('Set to true to make the message visible only to you.')
-				.setRequired(false),
 		),
 	async execute(interaction) {
 		const term = interaction.options.getString('term');
-		const ephemeral = interaction.options.getBoolean('ephemeral');
-
-		const options = await getCardsByTerm(term).map(card => {
+		const cards = await getCardsByTerm(term);
+		const options = cards.map(card => {
+			let label;
+			if (card.descriptor) {
+				label = `${card.character}, ${card.descriptor}`;
+			}
+			else {
+				label = `${card.character}`;
+			}
 			return {
-				label: card.character,
-				description: card.descriptor,
-				value: card.id,
+				label: label,
+				description: `Set: ${card.set}`,
+				value: `${card.id}`,
 			};
 		});
 
@@ -39,6 +40,6 @@ module.exports = {
 					.addOptions(options),
 			);
 
-		await interaction.reply({ content: 'Select a specific card', components: [select], ephemeral: ephemeral });
+		await interaction.reply({ content: 'Select a specific card', components: [select], ephemeral: true });
 	},
 };

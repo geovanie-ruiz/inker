@@ -24,7 +24,9 @@ module.exports = {
 			.then(embeds => {
 				if (embeds) {
 					embeds.forEach((embed) => {
-						message.channel.send({ embeds: [embed] });
+						if (embed) {
+							message.channel.send({ embeds: [embed] });
+						}
 					});
 				}
 			})
