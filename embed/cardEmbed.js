@@ -55,9 +55,6 @@ function makeActionEmbed(card) {
 }
 
 function tempParser(card) {
-	if (card.abilities.length === 0 || card.abilities[0] === null) return ['None'];
-	if (card.abilities[0] === '') return ['None'];
-
 	const ICONS = global.client.icons;
 
 	const color = card.ink.toLowerCase();
@@ -69,43 +66,48 @@ function tempParser(card) {
 	const rarityName = rarities[rarityIndex];
 	card.rarity = ICONS[rarityName];
 
-	const bold = /<b>([^\]]+)<\/b>/g;
-	const mark = /<mark>([^\]]+)<\/mark>/g;
-	const italic = /<i>([^\]]+)<\/i>/g;
+	if (card.abilities.length === 0 || card.abilities[0] === null || card.abilities[0] === '') {
+		card.abilityMarkdown = [ 'None' ];
+	}
+	else {
+		const bold = /<b>([^\]]+)<\/b>/g;
+		const mark = /<mark>([^\]]+)<\/mark>/g;
+		const italic = /<i>([^\]]+)<\/i>/g;
 
-	card.abilityMarkdown = card.abilities.map((markedUpAbility) => {
-		let ability = markedUpAbility
-			.replace('*', ICONS['ink']).replace('⬡', ICONS['ink'])
-			.replace('◆', ICONS['pip']).replace('↷', ICONS['tap'])
-			.replace('※', ICONS['attack']).replace('※', ICONS['defense'])
-			.replace('<br>', '\r\n\r\n').replace('<br />', '\r\n\r\n');
+		card.abilityMarkdown = card.abilities.map((markedUpAbility) => {
+			let ability = markedUpAbility
+				.replace('*', ICONS['ink']).replace('⬡', ICONS['ink'])
+				.replace('◆', ICONS['pip']).replace('↷', ICONS['tap'])
+				.replace('※', ICONS['attack']).replace('※', ICONS['defense'])
+				.replace('<br>', '\r\n\r\n').replace('<br />', '\r\n\r\n');
 
-		const bm = ability.match(bold);
-		if (bm) {
-			bm.forEach((match) => {
-				const value = match.replace(/<\/?b>/g, '');
-				ability = ability.replace(match, `**${value}**`);
-			});
-		}
+			const bm = ability.match(bold);
+			if (bm) {
+				bm.forEach((match) => {
+					const value = match.replace(/<\/?b>/g, '');
+					ability = ability.replace(match, `**${value}**`);
+				});
+			}
 
-		const mm = ability.match(mark);
-		if (mm) {
-			mm.forEach((match) => {
-				const value = match.replace(/<\/?mark>/g, '');
-				ability = ability.replace(match, `\`${value}\``);
-			});
-		}
+			const mm = ability.match(mark);
+			if (mm) {
+				mm.forEach((match) => {
+					const value = match.replace(/<\/?mark>/g, '');
+					ability = ability.replace(match, `\`${value}\``);
+				});
+			}
 
-		const im = ability.match(italic);
-		if (im) {
-			im.forEach((match) => {
-				const value = match.replace(/<\/?i>/g, '');
-				ability = ability.replace(match, `*${value}*`);
-			});
-		}
+			const im = ability.match(italic);
+			if (im) {
+				im.forEach((match) => {
+					const value = match.replace(/<\/?i>/g, '');
+					ability = ability.replace(match, `*${value}*`);
+				});
+			}
 
-		return ability;
-	});
+			return ability;
+		});
+	}
 }
 
 function makeEmbed(card) {

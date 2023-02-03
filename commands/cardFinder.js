@@ -32,14 +32,19 @@ module.exports = {
 			};
 		});
 
-		const select = new ActionRowBuilder()
-			.addComponents(
-				new StringSelectMenuBuilder()
-					.setCustomId('cardChoice')
-					.setPlaceholder('Nothing selected')
-					.addOptions(options),
-			);
+		if (options.length > 0) {
+			const select = new ActionRowBuilder()
+				.addComponents(
+					new StringSelectMenuBuilder()
+						.setCustomId('cardChoice')
+						.setPlaceholder('Nothing selected')
+						.addOptions(options),
+				);
 
-		await interaction.reply({ content: 'Select a specific card', components: [select], ephemeral: true });
+			await interaction.reply({ content: 'Select a specific card', components: [select], ephemeral: true });
+		}
+		else {
+			await interaction.reply({ content: 'No cards found.', ephemeral: true });
+		}
 	},
 };
