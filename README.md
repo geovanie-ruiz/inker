@@ -11,7 +11,11 @@ For example, [[Mickey Mouse]] will summon a Mickey Mouse card, whereas [[Brave L
 the Brave Little Tailor Mickey Mouse card.
 
 ## Slash command
-You can also use /card term notation. This notation provides auto-complete and more control over the resultant card.
+You can also use /card command. This provides a list of matching cards.
 
-For example, /card Mickey Mouse will give you Brave Little Tailor and Sorcerer Mickey to choose from. Whereas typing in
-"brave little tailor" or "sorcerer mickey" will summon the respective, specific card.
+For example, /card mickey will give you Brave Little Tailor and Sorcerer Mickey to choose from.
+
+# Installation
+
+The output created by inker uses specific emojis in place of generic symbols. These need to be installed onto the server
+using the custom emoji settings.
