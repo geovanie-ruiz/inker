@@ -2,9 +2,9 @@ module.exports = {
 	icons: () => {
 		const icons = [];
 		const emojis = [
-			'pip', 'ruby', 'amethyst', 'amber',
+			'lore', 'ruby', 'amethyst', 'amber',
 			'sapphire', 'emerald', 'steel', 'common',
-			'uncommon', 'rare', 'ultrarare', 'legendary',
+			'uncommon', 'rare', 'superrare', 'legendary',
 			'tap', 'ink', 'attack', 'defense',
 		];
 

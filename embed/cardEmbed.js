@@ -1,6 +1,20 @@
 const { EmbedBuilder } = require('discord.js');
 const { getCardsById, getCardsByName } = require('../api/cards');
 
+function makeImageEmbed(card) {
+	if (!card) return;
+
+	return new EmbedBuilder()
+		.setColor(card.colorCode)
+		.setURL(card.cardURL)
+		.setImage(card.thumbnail)
+		.setTimestamp()
+		.setFooter({
+			text: 'Brought to you by Lorcania',
+			iconUrl: 'https://lorcania.com/images/lorcana/logo.jpeg',
+		});
+}
+
 function makeCharacterEmbed(card) {
 	return new EmbedBuilder()
 		.setColor(card.colorCode)
@@ -31,7 +45,7 @@ function makeCharacterEmbed(card) {
 function makeActionEmbed(card) {
 	return new EmbedBuilder()
 		.setColor(card.colorCode)
-		.setTitle(`[${card.cost}] ${card.character}, ${card.descriptor}`)
+		.setTitle(`[${card.cost}] ${card.character}`)
 		.setURL(card.cardURL)
 		.addFields(
 			{ name: 'Ink', value: `${card.ink} ${card.inkIcon}`, inline: true },
@@ -59,9 +73,11 @@ function tempParser(card) {
 
 	const color = card.ink.toLowerCase();
 	card.inkIcon = ICONS[color];
-	card.loreIcon = ICONS['pip'].repeat(card.lore);
+	card.loreIcon = ICONS['lore'].repeat(card.lore);
 
-	const rarities = ['common', 'uncommon', 'rare', 'ultrarare', 'legendary'];
+	console.log(card);
+
+	const rarities = ['common', 'uncommon', 'rare', 'superrare', 'legendary'];
 	const rarityIndex = Math.floor(Math.random() * rarities.length);
 	const rarityName = rarities[rarityIndex];
 	card.rarity = ICONS[rarityName];
@@ -142,6 +158,21 @@ async function getCardFromId(id) {
 	});
 }
 
+async function getImageFromName(cardName) {
+	return getCardsByName(cardName).then(cards => {
+		if (cards.length <= 10 && cards.length > 0) {
+			const character = cards[0].character;
+
+			// Return the first character found if all characters are the same
+			// If multiple characters returned, fail
+			if (cards.length === 1 || cards.every((card) => { return card.character === character; })) {
+				return makeImageEmbed(cards[0]);
+			}
+		}
+		return undefined;
+	});
+}
+
 async function getCardFromName(cardName) {
 	return getCardsByName(cardName).then(cards => {
 		if (cards.length <= 10 && cards.length > 0) {
@@ -157,4 +188,4 @@ async function getCardFromName(cardName) {
 	});
 }
 
-module.exports = { getCardFromName, getCardFromId };
+module.exports = { getCardFromName, getCardFromId, getImageFromName };

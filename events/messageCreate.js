@@ -1,4 +1,4 @@
-const { getCardFromName } = require('../embed/cardEmbed');
+const { getCardFromName, getImageFromName } = require('../embed/cardEmbed');
 
 module.exports = {
 	name: 'messageCreate',
@@ -15,7 +15,16 @@ module.exports = {
 			matches.forEach((match) => {
 				// Clean up brackets from search term and make the request
 				match = match.replace(/\[/g, '').replace(/\]/g, '');
-				promises.push(getCardFromName(match));
+
+				switch (match.charAt(0)) {
+				case '!':
+					promises.push(getImageFromName(match.slice(1)));
+					break;
+				default:
+					console.log('No argument supplied');
+					promises.push(getCardFromName(match));
+					break;
+				}
 			});
 		}
 
